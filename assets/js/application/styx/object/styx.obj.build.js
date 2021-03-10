@@ -71,6 +71,7 @@ STYX.object.build = class{
         app.renderer.render(this.scene, this.camera)
     }
     #animateObject(){
+        this.raindrop.animate()
     }
 
 
