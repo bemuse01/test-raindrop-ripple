@@ -109,7 +109,8 @@ STYX.object.raindrop.build = class{
 
             const z = sin * amp * anulator * -1
 
-            const opacity = METHOD.normalize(Math.max(z, 0), 0, 1, 0, this.param.amp)
+            // const opacity = METHOD.normalize(Math.max(z, 0), 0, 1, 0, this.param.amp)
+            const opacity = METHOD.normalize(z, 0, 1, -this.param.amp, this.param.amp)
 
             position.array[i * 3 + 2] = z
             this.attr.opacity[i] = opacity
