@@ -65,7 +65,7 @@ STYX.object.raindrop.build = class{
             this.raindrop[i] = {
                 index: Math.floor(Math.random() * this.attr.opacity.length),
                 fase: 0,
-                timer: 1,
+                timer: Math.random(),
                 rd: {
                     fase: Math.floor(Math.random() * 3 + 3),
                     timer: Math.random() * this.param.timer + this.param.timer
