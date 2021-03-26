@@ -86,6 +86,8 @@ STYX.object.raindrop.build = class{
 
         this.mesh.geometry.dispose() 
         this.mesh.geometry = this.#createGeometry()
+
+        this.#createRipple()
     }
 
 
