@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
         <!-- lib -->
         <script src="assets/js/lib/vue.min.js"></script>
         <script src="assets/js/lib/three.min.r126.js"></script>
@@ -38,13 +41,15 @@
         <link href="assets/css/main.css" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <div id="object">
-            <canvas id="canvas"></canvas>
-        </div>
-        <div id="element">
-            <div class="scene scene-styx">
-                <div class="scene-styx-object-wrap">
-                    <div class="scene-styx-object"></div>
+        <div id="wrap">
+            <div id="object">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div id="element">
+                <div class="scene scene-styx">
+                    <div class="scene-styx-object-wrap">
+                        <div class="scene-styx-object"></div>
+                    </div>
                 </div>
             </div>
         </div>

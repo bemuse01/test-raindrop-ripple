@@ -11,6 +11,13 @@ canvas{
     top: 0;
     left: 0;
 }
+div#wrap{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
 
 /* styx */
 div.scene-styx-object{

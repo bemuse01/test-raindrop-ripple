@@ -7,6 +7,12 @@ APP.build = class{
 
     // init
     #init(){
+        this.wrap = document.getElementById('wrap')
+
+        const {width, height} = this.wrap.getBoundingClientRect()
+
+        this.width = width
+        this.height = height
     }
 
 
@@ -17,7 +23,7 @@ APP.build = class{
         this.scene = new THREE.Scene()
     
         this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true, canvas: canvas})
-        this.renderer.setSize(WIDTH, HEIGHT)
+        this.renderer.setSize(this.width, this.height)
         this.renderer.setPixelRatio(RATIO)
         this.renderer.setClearColor(0x000000)
         this.renderer.setClearAlpha(0.0)
@@ -37,6 +43,11 @@ APP.build = class{
 
     // resize
     resize(){
-        this.renderer.setSize(WIDTH, HEIGHT)
+        const {width, height} = this.wrap.getBoundingClientRect()
+
+        this.width = width
+        this.height = height
+
+        this.renderer.setSize(this.width, this.height)
     }
 }
