@@ -98,8 +98,8 @@ STYX.object.raindrop.build = class{
             const wSeg = this.param.seg + 1
             const hSeg = Math.floor(this.param.seg * ratio) + 1
 
-            const row = Math.floor(Math.random() * hSeg)
-            const col = Math.floor(Math.random() * wSeg)
+            const row = Math.floor(Math.random() * (hSeg - 20) + 10)
+            const col = Math.floor(Math.random() * (wSeg - 20) + 10)
             this.current[row][col] = 1.0
         }
 
