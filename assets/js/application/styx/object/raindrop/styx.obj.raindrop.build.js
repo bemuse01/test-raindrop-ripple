@@ -24,7 +24,7 @@ STYX.object.raindrop.build = class{
     // create
     #create(){
         this.#createMesh()
-        this.#createRaindrop()
+        this.#createRipple()
     }
     #createMesh(){
         const geometry = this.#createGeometry()
@@ -36,11 +36,11 @@ STYX.object.raindrop.build = class{
         const wSeg = this.param.seg
         const hSeg = Math.floor(this.param.seg * ratio)
         
-        const geometry = new THREE.PlaneBufferGeometry(this.width, this.height, wSeg, hSeg)
+        const geometry = new THREE.PlaneGeometry(this.width, this.height, wSeg, hSeg)
 
         this.attr = {opacity: new Float32Array(geometry.attributes.position.count)}
 
-        for(let i = 0; i < this.attr.opacity.length; i++) this.attr.opacity[i] = 1.0
+        for(let i = 0; i < this.attr.opacity.length; i++) this.attr.opacity[i] = 0.0
 
         geometry.setAttribute('opacity', new THREE.BufferAttribute(this.attr.opacity, 1))
 
@@ -58,20 +58,24 @@ STYX.object.raindrop.build = class{
             wireframe: false
         })
     }
-    #createRaindrop(){
-        this.raindrop = []
-        
-        for(let i = 0; i < this.param.count; i++){
-            this.raindrop[i] = {
-                index: Math.floor(Math.random() * this.attr.opacity.length),
-                fase: 0,
-                timer: Math.random(),
-                rd: {
-                    fase: Math.floor(Math.random() * 3 + 3),
-                    timer: Math.random() * this.param.timer + this.param.timer
-                }
+    #createRipple(){
+        const ratio = this.height / this.width
+        const wSeg = this.param.seg + 1
+        const hSeg = Math.floor(this.param.seg * ratio) + 1
+
+        this.current = []
+        this.previous = []
+
+        for(let i = 0; i < hSeg; i++){
+            this.current[i] = []
+            this.previous[i] = []
+            for(let j = 0; j < wSeg; j++){
+                this.current[i][j] = 0.0
+                this.previous[i][j] = 0.0
             }
         }
+
+        // this.previous[Math.floor(hSeg / 2)][Math.floor(wSeg / 2)] = 1.0
     }
 
     
@@ -87,55 +91,38 @@ STYX.object.raindrop.build = class{
 
     // animate
     animate(){
-        const position = this.mesh.geometry.attributes.position
         const opacity = this.mesh.geometry.attributes.opacity
 
-        for(let i = 0; i < position.count; i++){
-            let avg = 0
+        if(Math.random() > 0.8) {
+            const ratio = this.height / this.width
+            const wSeg = this.param.seg + 1
+            const hSeg = Math.floor(this.param.seg * ratio) + 1
 
-            this.raindrop.forEach(e => {
-                const x = position.array[i * 3] - position.array[e.index * 3]
-                const y = position.array[i * 3 + 1] - position.array[e.index * 3 + 1]
-
-                const dist = Math.sqrt(x ** 2 + y ** 2)
-                const angle = (360 * (dist / this.param.radius)) - e.fase
-                // const angle = (180 * (dist / this.param.radius)) - e.fase
-                const cos = Math.cos(angle * RADIAN) * e.timer
-
-                const amp = (-this.param.amp / this.param.radius * dist) + this.param.amp
-
-                const red = (this.param.radius + 0.001) - dist
-                const anulator = Math.floor(Math.sqrt(red / Math.abs(red) + 1))
-
-                const z = cos * amp * anulator * -1
-
-                avg += z
-            })
-
-            const z = avg / this.raindrop.length
-
-            position.array[i * 3 + 2] = z
-
-            const opacity = METHOD.normalize(Math.max(z, 0), 0, 1, 0, this.param.amp)
-
-            this.attr.opacity[i] = opacity
+            const row = Math.floor(Math.random() * hSeg)
+            const col = Math.floor(Math.random() * wSeg)
+            this.current[row][col] = 1.0
         }
 
-        this.raindrop.forEach(e => {
-            e.fase += e.rd.fase
-            e.timer -= e.rd.timer
+        for(let i = 1; i < this.current.length - 1; i++){
+            for(let j = 1; j < this.current[0].length - 1; j++){
+                this.current[i][j] = (
+                    this.previous[i - 1][j] + 
+                    this.previous[i + 1][j] + 
+                    this.previous[i][j - 1] +
+                    this.previous[i][j + 1]) / 2 - 
+                    this.current[i][j]
+                
+                this.current[i][j] = this.current[i][j] * this.param.damping
 
-            e.timer = Math.max(e.timer, 0)
-
-            if(e.timer === 0) {
-                e.index = Math.floor(Math.random() * position.count)
-                e.timer = 1
-                // e.fase = 90
-                e.fase = 270
+                const index = i * this.current[0].length + j
+                this.attr.opacity[index] = this.current[i][j]
             }
-        })
+        }
 
-        position.needsUpdate = true
         opacity.needsUpdate = true
+
+        const temp = this.previous
+        this.previous = this.current
+        this.current = temp
     }
 }
